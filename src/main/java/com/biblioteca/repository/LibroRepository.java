@@ -9,12 +9,12 @@ import java.util.List;
 
 public class LibroRepository {
 
-    public static List<Libro> selezionaLibri()
+    public static List<Libro> selezionaTuttiLibri()
     {
         List<Libro> libriList = new ArrayList<>();
         try{
             Connection connection = DriverManager.getConnection(DbConfig.URL, DbConfig.USER, DbConfig.PPW);
-            String query = "SELECT * FROM BIBLIOTECA";
+            String query = "SELECT * FROM libro";
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet rs = statement.executeQuery();
             while (rs.next()){
@@ -22,8 +22,8 @@ public class LibroRepository {
                         rs.getString("CODICE_ISBN"),
                         rs.getString("TITOLO"),
                         rs.getString("GENERE"),
-                        rs.getString("ANNO_PUBBLICAZIONE"),
-                        rs.getString("AUTORE")
+                        rs.getString("AUTORE"),
+                        rs.getString("ANNO_PUBBLICAZIONE")
                 );
                 libriList.add(b);
             }
@@ -41,7 +41,7 @@ public class LibroRepository {
     public static void inserisciLibro(Libro libro) {
         try {
             Connection connection = DriverManager.getConnection(DbConfig.URL, DbConfig.USER, DbConfig.PPW);
-            String query = "INSERT INTO BIBLIOTECA (CODICE_ISBN, TITOLO, GENERE, ANNO_PUBBLICAZIONE, AUTORE) " +
+            String query = "INSERT INTO Libro (CODICE_ISBN, TITOLO, GENERE, ANNO_PUBBLICAZIONE, AUTORE) " +
                     "VALUES (?, ?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, libro.getISBN());
@@ -58,5 +58,7 @@ public class LibroRepository {
             System.out.println("Errore durante l'inserimento del libro: " + ex.getMessage());
         }
     }
+
+
 
 }
