@@ -2,6 +2,7 @@ package com.biblioteca.repository;
 
 import com.biblioteca.constants.DbConfig;
 import com.biblioteca.model.Libro;
+import com.biblioteca.model.Noleggio;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -59,6 +60,78 @@ public class LibroRepository {
         }
     }
 
+
+    // Metodo per selezionare i libri in base all'autore
+    public static List<Libro> selezionaLibriPerAutore(String nomeAutore) {
+        List<Libro> libriList = new ArrayList<>();
+        try {
+            Connection connection = DriverManager.getConnection(DbConfig.URL, DbConfig.USER, DbConfig.PPW);
+            String query = "SELECT * FROM Libro WHERE AUTORE = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, nomeAutore);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                Libro b = new Libro(
+                        rs.getString("CODICE_ISBN"),
+                        rs.getString("TITOLO"),
+                        rs.getString("GENERE"),
+                        rs.getString("AUTORE"),
+                        rs.getString("ANNO_PUBBLICAZIONE")
+                );
+                libriList.add(b);
+            }
+        } catch (SQLException ex) {
+            System.out.println("Errore durante la selezione dei libri per autore: " + ex.getMessage());
+        }
+        return libriList;
+    }
+
+
+    // Metodo per inserire un nuovo noleggio nel database
+    public static void inserisciNoleggio(Noleggio noleggio) {
+        try {
+            Connection connection = DriverManager.getConnection(DbConfig.URL, DbConfig.USER, DbConfig.PPW);
+            String query = "INSERT INTO Noleggio (ISBN, CODICE_UTENTE, DATA_INIZIO_PRESTITO, DATA_FINE_PRESTITO) " +
+                    "VALUES (?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, noleggio.getISBN());
+            statement.setString(2, noleggio.getCodice_utente());
+            statement.setString(3, noleggio.getData_inizio_prestito());
+            statement.setString(4, noleggio.getData_fine_prestito());
+
+            statement.executeUpdate(); // Esegui l'istruzione di inserimento
+
+            System.out.println("Noleggio inserito con successo!");
+
+        } catch (SQLException ex) {
+            System.out.println("Errore durante l'inserimento del noleggio: " + ex.getMessage());
+        }
+    }
+
+    // Metodo per selezionare i libri in base al genere
+    public static List<Libro> selezionaLibriPerGenere(String genere) {
+        List<Libro> libriList = new ArrayList<>();
+        try {
+            Connection connection = DriverManager.getConnection(DbConfig.URL, DbConfig.USER, DbConfig.PPW);
+            String query = "SELECT * FROM Libro WHERE GENERE = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, genere);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                Libro b = new Libro(
+                        rs.getString("CODICE_ISBN"),
+                        rs.getString("TITOLO"),
+                        rs.getString("GENERE"),
+                        rs.getString("AUTORE"),
+                        rs.getString("ANNO_PUBBLICAZIONE")
+                );
+                libriList.add(b);
+            }
+        } catch (SQLException ex) {
+            System.out.println("Errore durante la selezione dei libri per genere: " + ex.getMessage());
+        }
+        return libriList;
+    }
 
 
 }
