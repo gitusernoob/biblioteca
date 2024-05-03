@@ -134,4 +134,33 @@ public class LibroRepository {
     }
 
 
+    // Metodo per recuperare i titoli dei libri noleggiati da un utente
+    public static List<Libro> selezionatitoliLibriNoleggiatiDaUtente(String codiceUtente) {
+        List<Libro> libriList = new ArrayList<>();
+        try {
+            Connection connection = DriverManager.getConnection(DbConfig.URL, DbConfig.USER, DbConfig.PPW);
+            String query = "SELECT * FROM Libro l JOIN utente_noleggia_libro n ON l.CODICE_ISBN = n.CODICE_ISBN WHERE n.codice_utente = ?";
+
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, codiceUtente);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+
+                Libro b = new Libro(
+                        rs.getString("CODICE_ISBN"),
+                        rs.getString("TITOLO"),
+                        rs.getString("GENERE"),
+                        rs.getString("AUTORE"),
+                        rs.getString("ANNO_PUBBLICAZIONE")
+                );
+                libriList.add(b);
+
+            }
+        } catch (SQLException ex) {
+            System.out.println("Errore durante la selezione dei titoli dei libri noleggiati dall'utente: " + ex.getMessage());
+        }
+        return libriList;
+    }
+
 }

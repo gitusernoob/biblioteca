@@ -37,4 +37,11 @@ public class LibroController {
         return LibroRepository.selezionaLibriPerGenere(genere);
     }
 
+
+    // seleziona libri di un utente
+    @GetMapping("/selezionaLibriNoleggiatiUtente")
+    public List<Libro> selezionaLibriNoleggiatiUtente(@RequestParam("codiceUtente") String codiceUtente) {
+        return LibroRepository.selezionatitoliLibriNoleggiatiDaUtente(codiceUtente);
+    }
+
 }
